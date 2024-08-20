@@ -15,7 +15,8 @@ HIDDEN_SIZE = 256
 EMBEDDING_SIZE = 100
 NUM_CLASSES = 28
 
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 
 class SentimentDataset(Dataset):
     def __init__(self, texts, labels):
@@ -28,12 +29,19 @@ class SentimentDataset(Dataset):
     def __getitem__(self, index):
         return self.texts[index], self.labels[index]
 
-datasets = ['datasets/goemotion_1.csv', 'datasets/goemotion_2.csv', 'datasets/goemotion_3.csv']
+
+datasets = [
+    "datasets/goemotion_1.csv",
+    "datasets/goemotion_2.csv",
+    "datasets/goemotion_3.csv",
+]
 dfs = [pd.read_csv(file_path, header=None) for file_path in datasets]
 df = pd.concat(dfs)
 texts = df[0].values
 labels = df.iloc[:, 1:].values
-train_texts, val_texts, train_labels, val_labels = train_test_split(texts, labels, test_size=0.2)
+train_texts, val_texts, train_labels, val_labels = train_test_split(
+    texts, labels, test_size=0.2
+)
 
 vocab = {}
 for text in train_texts:
@@ -68,14 +76,18 @@ train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
 val_dataset = SentimentDataset(val_sequences, val_labels)
 val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE)
 
-model = SentimentLSTM(len(vocab) + 1, EMBEDDING_SIZE, HIDDEN_SIZE, NUM_CLASSES, vocab).to(device)
+model = SentimentLSTM(
+    len(vocab) + 1, EMBEDDING_SIZE, HIDDEN_SIZE, NUM_CLASSES, vocab
+).to(device)
 criterion = nn.BCELoss()
 optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE, weight_decay=WEIGHT_DECAY)
+
 
 def accuracy(outputs, labels):
     preds = outputs > 0.5
     corrects = (preds == labels).float().sum()
     return corrects / labels.numel()
+
 
 for epoch in range(EPOCHS):
     model.train()
@@ -109,7 +121,9 @@ for epoch in range(EPOCHS):
     val_loss = val_loss / len(val_loader)
     val_acc = val_acc / len(val_loader)
 
-    print(f'Epoch {epoch + 1}, Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.4f}, Val Loss: {val_loss:.4f}, Val Acc: {val_acc:.4f}')
+    print(
+        f"Epoch {epoch + 1}, Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.4f}, Val Loss: {val_loss:.4f}, Val Acc: {val_acc:.4f}"
+    )
 
 with torch.package.PackageExporter("sentiment_model.pt") as e:
     e.save_source_file("sentiment", "sentiment.py")

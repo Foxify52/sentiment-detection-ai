@@ -11,11 +11,16 @@ Run `train_sentiment.py` with your own training values or use the pretrained mod
 
 ## Usage
 ```
+import torch
 import torch.package
 
-model = torch.package.PackageImporter("sentiment_model.pt").load_pickle("model", "model")
-model.to(torch.device('cuda' if torch.cuda.is_available() else 'cpu'))
-print(model.infer("This is a happy little test sentences!"))
+# Load model and move to a device
+model = torch.package.PackageImporter("sentiment_model.pt").load_pickle("model", "model", torch.device("cuda" if torch.cuda.is_available() else "cpu"))
+model.eval()
+
+# Perform inference
+print(model.infer("This is a happy little test sentence!"))
+
 ```
 ## Licensing
    Copyright 2023 Foxify52

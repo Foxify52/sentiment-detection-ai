@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "sentiment-detection-ai"
+version = "0.1.0"
+description = ""
+authors = ["Foxify52 <93794624+Foxify52@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+torch = {version = "^2.4.0", source="torch"}
+scikit-learn = "^1.5.1"
+pandas = "^2.2.2"
+numpy = "1.26.4"
+
+[[tool.poetry.source]]
+name = "torch"
+url = "https://download.pytorch.org/whl/cu121"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
