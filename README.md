@@ -5,7 +5,7 @@ Google's GoEmotion dataset and modifying it a bit.
 ## Installation
 This was made with python 3.10.11 but might work with other version as well.
 
-Run `pip install -r requirements.txt`.
+Run `poetry install --no-root`.
 
 Run `train_sentiment.py` with your own training values or use the pretrained model from the release tab.
 
@@ -23,7 +23,7 @@ print(model.infer("This is a happy little test sentence!"))
 
 ```
 ## Licensing
-   Copyright 2023 Foxify52
+   Copyright 2024 Foxify52
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
