@@ -1,21 +1,25 @@
 # Sentiment Detection AI
-I put this together after the need arose for a simple AI that could detect sentiment. I was unhappy with what I could find so I opted to create my own using 
-Google's GoEmotion dataset and modifying it a bit.
+I put this together after the need arose for a simple AI that could detect sentiment. I was unhappy with what I could find so I opted to create my own using a modified version of Google's GoEmotion dataset.
 
 ## Installation
 This was made with python 3.10.11 but might work with other version as well.
 
 Run `poetry install --no-root`.
 
-Run `train_sentiment.py` with your own training values or use the pretrained model from the release tab.
+Run `train_sentiment.py` with your own hyperparameters or use the pretrained model from the release tab.
+
+Recommended to run `test_sentiment.py` to test after training with your own data or hyperparameters.
 
 ## Usage
 ```
 import torch
-import torch.package
 
 # Load model and move to a device
-model = torch.package.PackageImporter("sentiment_model.pt").load_pickle("model", "model", torch.device("cuda" if torch.cuda.is_available() else "cpu"))
+model = torch.load(
+            "sentiment_model.pt",
+            torch.device("cuda" if torch.cuda.is_available() else "cpu"),
+            weights_only=False,
+        )
 model.eval()
 
 # Perform inference

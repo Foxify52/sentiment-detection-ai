@@ -1,22 +1,25 @@
 import torch
-import torch.nn as nn
 
 
-class SentimentLSTM(nn.Module):
-    def __init__(self, vocab_size, embedding_size, hidden_size, num_classes, vocab):
+class SentimentLSTM(torch.nn.Module):
+    def __init__(
+        self, vocab_size, embedding_size, hidden_size, num_classes, vocab, dropout
+    ):
         super(SentimentLSTM, self).__init__()
-        self.embedding = nn.Embedding(vocab_size, embedding_size)
-        self.lstm = nn.LSTM(embedding_size, hidden_size, batch_first=True)
-        self.fc = nn.Linear(hidden_size, num_classes)
-        self.sigmoid = nn.Sigmoid()
+        self.embedding = torch.nn.Embedding(vocab_size, embedding_size)
+        self.lstm = torch.nn.LSTM(
+            embedding_size, hidden_size, batch_first=True, bidirectional=True
+        )
+        self.dropout = torch.nn.Dropout(dropout)
+        self.fc = torch.nn.Linear(hidden_size * 2, num_classes)
         self.vocab = vocab
 
     def forward(self, x):
         x = self.embedding(x)
         x, _ = self.lstm(x)
+        x = self.dropout(x)
         x = x[:, -1, :]
         x = self.fc(x)
-        x = self.sigmoid(x)
         return x
 
     def infer(self, sentence):
@@ -29,7 +32,7 @@ class SentimentLSTM(nn.Module):
         )
         with torch.no_grad():
             output = self(sequence)
-        probs = output.squeeze().tolist()
+        probs = torch.sigmoid(output).squeeze().tolist()
         labels = [
             "admiration",
             "amusement",
